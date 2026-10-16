@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Simulador ciudadano de garantías constitucionales, servicios públicos, presupuesto e impuestos para Panamá.">
+  <title>Constitución y Libertad — Panamá</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">LABORATORIO CIUDADANO · PANAMÁ</p>
+      <h1>Constitución, libertad y presupuesto</h1>
+      <p class="lede">Explora cómo distintas garantías, servicios públicos, impuestos y prioridades presupuestarias interactúan. Los derechos fundamentales son un piso de protección; el simulador ayuda a comparar políticas y sus costes, no a poner precio a los derechos.</p>
+      <div class="notice"><strong>Prototipo educativo:</strong> los números son supuestos ilustrativos, no cifras oficiales ni una recomendación tributaria. Sustituye los parámetros por datos oficiales antes de usarlo para decisiones reales.</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <div class="section-head">
+        <div><p class="eyebrow">01 · ESCENARIO</p><h2>Configura el modelo de país</h2></div>
+        <button id="reset" class="button secondary">Restablecer</button>
+      </div>
+      <p class="muted">Ajusta los niveles de garantía y prestación. La libertad de expresión, igualdad ante la ley, debido proceso y protección frente a la arbitrariedad son garantías básicas que no deberían poder desactivarse por una votación presupuestaria.</p>
+      <div class="controls-grid">
+        <div class="control">
+          <label for="economic">Libertad económica <output id="economicOut"></output></label>
+          <input id="economic" type="range" min="0" max="100" value="80">
+          <div class="range-labels"><span>Más intervención regulatoria</span><span>Más libertad de iniciativa</span></div>
+          <small>Modela orientación general, barreras y discrecionalidad regulatoria; no elimina reglas contra fraude, monopolios o daños.</small>
+        </div>
+        <div class="control">
+          <label for="civil">Garantías civiles y debido proceso <output id="civilOut"></output></label>
+          <input id="civil" type="range" min="0" max="100" value="90">
+          <div class="range-labels"><span>Garantías débiles</span><span>Garantías robustas</span></div>
+          <small>El indicador es una meta de calidad institucional; los derechos básicos siguen protegidos por el diseño del modelo.</small>
+        </div>
+        <div class="control">
+          <label for="culture">Libertad cultural y educativa <output id="cultureOut"></output></label>
+          <input id="culture" type="range" min="0" max="100" value="85">
+          <div class="range-labels"><span>Menos pluralismo</span><span>Más pluralismo</span></div>
+          <small>Incluye libertad académica, expresión cultural, diversidad y autonomía de enseñanza.</small>
+        </div>
+        <div class="control">
+          <label for="health">Nivel de servicio de salud <output id="healthOut"></output></label>
+          <input id="health" type="range" min="0" max="100" value="75">
+          <div class="range-labels"><span>Prestación básica</span><span>Alta cobertura/capacidad</span></div>
+          <small>Un nivel más alto requiere personal, instalaciones, medicamentos y financiación recurrente.</small>
+        </div>
+        <div class="control">
+          <label for="security">Nivel de servicio de seguridad pública <output id="securityOut"></output></label>
+          <input id="security" type="range" min="0" max="100" value="70">
+          <div class="range-labels"><span>Capacidad básica</span><span>Alta capacidad</span></div>
+          <small>Debe acompañarse de controles, transparencia y respeto a los derechos.</small>
+        </div>
+        <div class="control">
+          <label for="education">Nivel de servicio educativo <output id="educationOut"></output></label>
+          <input id="education" type="range" min="0" max="100" value="75">
+          <div class="range-labels"><span>Prestación básica</span><span>Alta cobertura/calidad</span></div>
+          <small>El gasto adicional debe asociarse a resultados medibles, no solo a más presupuesto.</small>
+        </div>
+        <div class="control">
+          <label for="tax">Esfuerzo tributario simulado <output id="taxOut"></output></label>
+          <input id="tax" type="range" min="0" max="100" value="50">
+          <div class="range-labels"><span>Menor recaudación</span><span>Mayor recaudación</span></div>
+          <small>Índice abstracto de recaudación, no una tasa de impuesto ni un porcentaje real del PIB.</small>
+        </div>
+        <div class="control">
+          <label for="efficiency">Eficiencia y reasignación del gasto <output id="efficiencyOut"></output></label>
+          <input id="efficiency" type="range" min="0" max="100" value="55">
+          <div class="range-labels"><span>Menos ahorro</span><span>Más ahorro potencial</span></div>
+          <small>Simula compras competitivas, reducción de duplicidades y auditoría. El ahorro no está garantizado.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics-grid" aria-live="polite">
+      <article class="metric"><span>Ingresos simulados</span><strong id="revenue">—</strong><small>unidades presupuestarias</small></article>
+      <article class="metric"><span>Gasto estimado</span><strong id="spending">—</strong><small>unidades presupuestarias</small></article>
+      <article class="metric"><span>Balance</span><strong id="balance">—</strong><small id="balanceLabel">calculando…</small></article>
+      <article class="metric"><span>Índice de libertades</span><strong id="freedom">—</strong><small>indicador ilustrativo, no ranking de países</small></article>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">02 · REORGANIZACIÓN PRESUPUESTARIA</p>
+      <h2>¿A dónde se asignan los recursos?</h2>
+      <p class="muted">El presupuesto inicial se representa como 100 unidades de gasto. El modelo permite ver el coste relativo de los servicios seleccionados y los posibles ahorros por eficiencia. No equivale al Presupuesto General del Estado de Panamá.</p>
+      <div id="budgetRows" class="budget-list"></div>
+      <div class="two-col">
+        <div class="callout">
+          <h3>Lectura del balance</h3>
+          <p id="balanceExplanation">—</p>
+        </div>
+        <div class="callout">
+          <h3>Qué significa “más libertad”</h3>
+          <p>La libertad no es una sola cifra. El índice combina garantías civiles, libertad económica y pluralismo cultural. No compensa una vulneración de derechos con más recaudación o mejores servicios.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">03 · VALIDACIÓN CONSTITUCIONAL</p>
+      <h2>Parámetros que el texto constitucional debe exigir</h2>
+      <p class="muted">Marca los requisitos que el anteproyecto debe convertir en normas, leyes de desarrollo, auditorías e indicadores verificables.</p>
+      <div id="checklist" class="checklist"></div>
+      <div class="actions">
+        <button id="export" class="button">Exportar escenario y validación (JSON)</button>
+        <button id="copySummary" class="button secondary">Copiar resumen</button>
+      </div>
+      <p id="exportStatus" class="status" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">04 · BASE JURÍDICA Y SUPUESTOS</p>
+      <h2>Cómo interpretar este prototipo</h2>
+      <ul class="source-list">
+        <li><strong>Constitución vigente:</strong> artículos 37 (expresión), 47–52 (propiedad, expropiación y legalidad tributaria), 64–75 (trabajo), 109–117 (salud y seguridad social), 118–121 (ambiente), 257–281 (hacienda pública y presupuesto) y 282–292 (economía nacional). El alcance exacto debe comprobarse en el texto oficial consolidado.</li>
+        <li><a href="https://constitucion.te.gob.pa/constitucion-vigente/" target="_blank" rel="noopener noreferrer">Tribunal Electoral — Constitución vigente</a></li>
+        <li><a href="https://www.asamblea.gob.pa/" target="_blank" rel="noopener noreferrer">Asamblea Nacional de Panamá</a></li>
+      </ul>
+      <div class="notice"><strong>Importante:</strong> este proyecto no es asesoría legal ni una estimación fiscal oficial. No sustituye el análisis de datos de ingresos, deuda, ejecución presupuestaria, población, necesidades sanitarias, criminalidad o resultados educativos. La versión real debería cargar datos verificables y documentar cada supuesto.</div>
+    </section>
+    <footer><p>Constitución y Libertad · Proyecto ciudadano abierto · Licencia MIT · Datos ilustrativos</p></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
